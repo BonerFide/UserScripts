@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PMVHaven AutoDL
 // @namespace    https://pmvhaven.com/
-// @version      0.7.1
+// @version      0.7.2
 // @description  Dashboard to simplify PMV downloading on PMVHaven
 // @author       S3L3CT3D
 // @match        https://pmvhaven.com/video/*
@@ -339,22 +339,26 @@ async function buttonClickSingleDL(){
     studio_name = videoData.creator
 
     let video = new VideoData({source: "PMVH_AutoDLv1"})
+    video.site = "pmvhaven";
     video.title = videoData.title
     video.date = videoData.isoDate
     video.studio = studio_name
     video.url = window.location.href
     video.id = videoID
+    video.rawData = videoData
 
+    console.log(video)
+    
     let downloadedVideos = getStoredDownloaded()
     if (downloadedVideos && downloadedVideos.length > 0 && downloadedVideos.includes(videoID)){
         if (!confirm("This video has already been downloaded. Download Anyways ?")){
             return
         }
     }
-    
+
     console.log("Downloading " + video.title)
     console.log(video)
-    
+
     currentDLPromise = Download(video, videoData.url, {
         conflictAction : "prompt"
     })
